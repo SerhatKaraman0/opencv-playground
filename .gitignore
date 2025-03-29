@@ -9,7 +9,12 @@ logs/
 
 *.cpython
 .DS_Store
-
+*.mov
+*.mp4
+*.avi
+data/videos/*.mov
+data/videos/*.mp4
+data/videos/*.avi
 
 # Ignore build and generated files
 firebase_auth/
