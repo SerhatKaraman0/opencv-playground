@@ -1,6 +1,7 @@
 import cv2 as cv
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 
 BASE_DIR    = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DATA_DIR    = os.path.abspath(os.path.join(BASE_DIR, 'data'))
@@ -240,7 +241,46 @@ def rotate_img(
         print(f"Shifted image saved at: {save_path}")
 
 
+def histogram_and_img_hist(img_path: str):
+    img_to_binary = cv.imread(img_path)
+    if img_to_binary is None:
+        raise ValueError(f"Error: Unable to load image from {img_path}")
+    
+    # Histogram calculation
+    h, w, _ = img_to_binary.shape
+    hist = np.zeros([256], dtype=np.int32)
+    for row in range(h):
+        for col in range(w):
+            pv = img_to_binary[row, col]
+            hist[pv] += 1
+    
+    # Plot histogram
+    y_pos = np.arange(0, 256, 1, dtype=np.int32)
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    plt.bar(y_pos, hist, align='center', color='r', alpha=0.5)
+    plt.xticks(y_pos, y_pos)
+    plt.ylabel('Frequency')
+    plt.title('Histogram')
 
+    # Image histogram using OpenCV
+    plt.subplot(1, 2, 2)
+    color = ('blue', 'green', 'red')
+    for i, col in enumerate(color):
+        hist = cv.calcHist([img_to_binary], [i], None, [256], [0, 256])
+        plt.plot(hist, color=col)
+        plt.xlim([0, 256])
+    plt.title('Image Histogram')
+    
+    plt.show()
+
+
+def bilateral_filter(img_path: str):
+    img_to_binary = cv.imread(img_path)
+
+    h, w = img_to_binary.shape[:2]
+
+    dst = cv.bilateralFilter(img_to_binary)
 
 def main():
     first_img_path = os.path.join(IMGS_DIR, 'grayscaled_woman.jpg')
@@ -263,8 +303,8 @@ def main():
     # first_shift_arr  = [1, 0, 70]
     # second_shift_arr = [0, 1, 30]
     
-    rotate_img(first_img_path, is_save=True)
-    
+    histogram_and_img_hist(second_img_path)
+
     cv.destroyAllWindows()
 
 
