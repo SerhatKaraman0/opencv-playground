@@ -77,5 +77,6 @@ src/
 
 ## Acknowledgments
 
+- [Turkcell Geleceği Yazanlar Opencv Course](https://gelecegiyazanlar.turkcell.com.tr/egitimler/opencv/)
 - [OpenCV Documentation](https://docs.opencv.org/)
 - Tutorials and resources from the OpenCV community.
