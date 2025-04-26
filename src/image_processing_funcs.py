@@ -282,6 +282,45 @@ def bilateral_filter(img_path: str):
 
     dst = cv.bilateralFilter(img_to_binary)
 
+######### NOT IMPLEMENTED FEATURES BUT COVERED IN THE COURSE #########
+"""
+Chapter 3:
+    Gauss Smoothing Filter:
+        - Used to reduce noise and detail in an image.
+        - Applies a Gaussian kernel to smooth the image.
+        - Commonly used as a preprocessing step in image processing tasks.
+
+    Sobel Filter:
+        - Used for edge detection by calculating the gradient of image intensity.
+        - Highlights regions of high spatial frequency, such as edges.
+        - Operates in horizontal, vertical, or both directions.
+
+    Canny Edge Detection:
+        - A multi-step algorithm to detect edges in an image.
+        - Involves noise reduction, gradient calculation, non-maximum suppression, and edge tracking.
+        - Produces a binary image with detected edges.
+
+    Otsu Method:
+        - Used for automatic image thresholding.
+        - Determines an optimal threshold value to separate foreground and background.
+        - Works by maximizing inter-class variance.
+
+    Contours:
+        - Used to detect and analyze shapes and boundaries in an image.
+        - Represents a curve joining all continuous points along a boundary with the same intensity.
+        - Useful for object detection and shape analysis.
+
+    Hoffman Line Detection:
+        - Used to detect straight lines in an image.
+        - Based on the Hough Transform algorithm.
+        - Effective for identifying lines in noisy or complex images.
+
+    Hoffman Circle Detection:
+        - Used to detect circular shapes in an image.
+        - Based on the Hough Transform for circles.
+        - Commonly used in applications like detecting coins or circular objects.
+"""
+
 def main():
     first_img_path = os.path.join(IMGS_DIR, 'grayscaled_woman.jpg')
     second_img_path = os.path.join(IMGS_DIR, 'woman.jpg')
