@@ -321,6 +321,175 @@ Chapter 3:
         - Commonly used in applications like detecting coins or circular objects.
 """
 
+################### CHAPTER 4 #######################
+# Adding noise to an image 
+
+def add_salt_and_pepper_noise(img_path: str, wait_time: int = 10_000, is_save: bool = False):
+    img_to_binary = cv.imread(img_path)
+    h, w = img_to_binary.shape[:2]
+    nums = 10_000
+
+    rows = np.random.randint(0, h, nums, dtype=np.int32)
+    cols = np.random.randint(0, w, nums, dtype=np.int32)
+    
+    for i in range(nums):
+        if i % 2 == 1:
+            img_to_binary[rows[i], cols[i]] = (255, 255, 255)
+        img_to_binary[rows[i], cols[i]] = (0, 0, 0)
+    
+    cv.imshow("new window", img_to_binary)
+    cv.waitKey(wait_time) 
+
+    if is_save:
+        file_name = os.path.basename(img_path)
+        save_name = f"salt_and_pepper_{file_name}"
+
+        save_dir  = os.path.join(IMGS_DIR, "NOISED_IMAGES")
+        os.makedirs(save_dir, exist_ok=True)  
+        save_path = os.path.join(save_dir, save_name)
+        cv.imwrite(save_path, img_to_binary)
+        print(f"Salt and peppered image saved at: {save_path}")
+
+
+# image sharpening 
+def sharpen_image(img_path: str, wait_time: int = 10_000, is_save: bool =  False):
+    img_to_binary = cv.imread(img_path)
+
+    sharpen_op = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]], dtype=np.float32)
+    sharpen_img = cv.filter2D(img_to_binary, cv.CV_32F, sharpen_op)
+    sharpen_img = cv.convertScaleAbs(sharpen_img)
+
+    cv.imshow("Sharpened Image", sharpen_img)
+    cv.waitKey(wait_time)
+
+    if is_save:
+        file_name = os.path.basename(img_path)
+        save_name = f"sharpened_{file_name}"
+
+        save_dir  = os.path.join(IMGS_DIR, "SHARPENED_IMAGES")
+        os.makedirs(save_dir, exist_ok=True)  
+        save_path = os.path.join(save_dir, save_name)
+        cv.imwrite(save_path, img_to_binary)
+        print(f"Sharpened image saved at: {save_path}")
+
+# Harris corner detection
+def harris_corner_detection(img_path: str, wait_time: int = 10_000, is_save: bool = False) -> None:
+    img = cv.imread(img_path)
+    if img is None:
+        raise FileNotFoundError(f"Image not found at {img_path}")
+
+    block_size = 2
+    aperture_size = 3
+    k = 0.04
+
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    gray = np.float32(gray)
+
+    dst = cv.cornerHarris(gray, block_size, aperture_size, k)
+
+    # Threshold for an optimal value, it may vary depending on the image.
+    threshold_value = 0.01 * dst.max()
+    ys, xs = np.where(dst > threshold_value)
+
+    for (x, y) in zip(xs, ys):
+        cv.circle(img, (x, y), 2, (0, 255, 0), 2)
+
+    cv.imshow("Harris Corner Detection", img)
+    cv.waitKey(wait_time)
+    cv.destroyAllWindows()
+
+    if is_save:
+        file_name = os.path.basename(img_path)
+        save_name = f"harris_{file_name}"
+
+        save_dir = os.path.join("images", "HARRIS_IMAGES")
+        os.makedirs(save_dir, exist_ok=True)
+        save_path = os.path.join(save_dir, save_name)
+        cv.imwrite(save_path, img)
+        print(f"Harris-corner detected image saved at: {save_path}")
+   
+
+def shi_thomas_corner_detection(img_path: str, wait_time: int= 10_000, is_save: bool = False):
+    img_to_binary = cv.imread(img_path)
+
+    gray = cv.cvtColor(img_to_binary, cv.COLOR_BGR2GRAY)
+    corners = cv.goodFeaturesToTrack(
+        gray,
+        maxCorners=35,
+        qualityLevel=0.05,
+        minDistance=10
+    )
+
+    for pt in corners:
+        print(pt)
+        b = np.random.randint(0, 256)
+        g = np.random.randint(0, 256)
+        r = np.random.randint(0, 256)
+        x = np.int32(pt[0][0])
+        y = np.int32(pt[0][1])
+        cv.circle(img_to_binary, (x, y), 5, (int(b), int(g), int(r)), 2)
+
+    cv.imshow("Shi Thomas Corner Detection", img_to_binary)
+    cv.waitKey(wait_time)
+    cv.destroyAllWindows()
+
+    if is_save:
+        file_name = os.path.basename(img_path)
+        save_name = f"shi_thomas_{file_name}"
+
+        save_dir = os.path.join("images", "SHI_THOMAS_IMAGES")
+        os.makedirs(save_dir, exist_ok=True)
+        save_path = os.path.join(save_dir, save_name)
+        cv.imwrite(save_path, img_to_binary)
+        print(f"SHİ-Thomas-corner detected image saved at: {save_path}") 
+
+
+def subpixel_corner_detection(img_path: str, wait_time: int= 10_000, is_save: bool = False):
+    img_to_binary = cv.imread(img_path)
+
+    gray = cv.cvtColor(img_to_binary, cv.COLOR_BGR2GRAY)
+    corners = cv.goodFeaturesToTrack(
+        gray,
+        maxCorners=35,
+        qualityLevel=0.05,
+        minDistance=10
+    )
+
+    for pt in corners:
+        print(pt)
+        b = np.random.randint(0, 256)
+        g = np.random.randint(0, 256)
+        r = np.random.randint(0, 256)
+        x = np.int32(pt[0][0])
+        y = np.int32(pt[0][1])
+        cv.circle(img_to_binary, (x, y), 5, (int(b), int(g), int(r)), 2)
+
+
+    winSize = (3, 3)
+    zeroZone = (-1, -1)
+
+    criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_COUNT, 40, 0.001)
+    corners = cv.cornerSubPix(gray, corners, winSize, zeroZone, criteria)
+
+    for i in range(corners.shape[0]):
+        print(" -- Refined Corner [", i, "] (", corners[i, 0, 0], ",", corners[i, 0, 1], ")")
+
+    cv.imshow("Subpixel Corner Detection", img_to_binary)
+    cv.waitKey(wait_time)
+    cv.destroyAllWindows()
+
+    if is_save:
+        file_name = os.path.basename(img_path)
+        save_name = f"subpixel_{file_name}"
+
+        save_dir = os.path.join("images", "SUBPIXEL_IMAGES")
+        os.makedirs(save_dir, exist_ok=True)
+        save_path = os.path.join(save_dir, save_name)
+        cv.imwrite(save_path, img_to_binary)
+        print(f"SUb pixel detected image saved at: {save_path}") 
+    
+
+
 def main():
     first_img_path = os.path.join(IMGS_DIR, 'grayscaled_woman.jpg')
     second_img_path = os.path.join(IMGS_DIR, 'woman.jpg')
@@ -342,7 +511,9 @@ def main():
     # first_shift_arr  = [1, 0, 70]
     # second_shift_arr = [0, 1, 30]
     
-    histogram_and_img_hist(second_img_path)
+    # histogram_and_img_hist(second_img_path)
+
+    subpixel_corner_detection(first_img_path, is_save=True)
 
     cv.destroyAllWindows()
 
