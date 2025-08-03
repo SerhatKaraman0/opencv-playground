@@ -9,7 +9,7 @@ IMGS_DIR    = os.path.abspath(os.path.join(DATA_DIR, 'imgs'))
 VIDEOS_DIR  = os.path.abspath(os.path.join(DATA_DIR, 'videos')) 
 
 
-def show_image_info(image_path: str) -> str:
+def show_image_info(image_path: str) -> None:
     img_to_binary = cv.imread(image_path)
 
     min_val, max_val, min_loc, max_loc = cv.minMaxLoc(img_to_binary)
@@ -22,7 +22,7 @@ def show_image_info(image_path: str) -> str:
     print(f'mean: {means}, std_dev: {std_dev}')
 
 
-def image_normalization(image_path: str, option: str) -> np.array:
+def image_normalization(image_path: str, option: str):
     NORMALIZE_OPTIONS = ['min_max', 'inf', 'l1', 'l2']
     img_to_binary = cv.imread(image_path, cv.COLOR_BGR2GRAY)
     float_img_to_binary = np.float32(img_to_binary)
